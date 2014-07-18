@@ -21,6 +21,13 @@ public interface ExprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitContinueStat(@NotNull ExprParser.ContinueStatContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link ExprParser#HzFuncCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHzFuncCall(@NotNull ExprParser.HzFuncCallContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link ExprParser#ExprRef}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -68,6 +75,13 @@ public interface ExprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCompare(@NotNull ExprParser.CompareContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link ExprParser#hzFuncDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHzFuncDef(@NotNull ExprParser.HzFuncDefContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link ExprParser#Plus}.

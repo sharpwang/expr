@@ -32,6 +32,19 @@ public class ExprBaseListener implements ExprListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterHzFuncCall(@NotNull ExprParser.HzFuncCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitHzFuncCall(@NotNull ExprParser.HzFuncCallContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExprRef(@NotNull ExprParser.ExprRefContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -117,6 +130,19 @@ public class ExprBaseListener implements ExprListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCompare(@NotNull ExprParser.CompareContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterHzFuncDef(@NotNull ExprParser.HzFuncDefContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitHzFuncDef(@NotNull ExprParser.HzFuncDefContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

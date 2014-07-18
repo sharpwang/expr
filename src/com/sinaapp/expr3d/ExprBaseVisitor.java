@@ -28,6 +28,14 @@ public class ExprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements E
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitHzFuncCall(@NotNull ExprParser.HzFuncCallContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitExprRef(@NotNull ExprParser.ExprRefContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -77,6 +85,14 @@ public class ExprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements E
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitCompare(@NotNull ExprParser.CompareContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitHzFuncDef(@NotNull ExprParser.HzFuncDefContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

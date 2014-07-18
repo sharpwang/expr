@@ -22,6 +22,17 @@ public interface ExprListener extends ParseTreeListener {
 	void exitContinueStat(@NotNull ExprParser.ContinueStatContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link ExprParser#HzFuncCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterHzFuncCall(@NotNull ExprParser.HzFuncCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprParser#HzFuncCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitHzFuncCall(@NotNull ExprParser.HzFuncCallContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link ExprParser#ExprRef}.
 	 * @param ctx the parse tree
 	 */
@@ -97,6 +108,17 @@ public interface ExprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCompare(@NotNull ExprParser.CompareContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ExprParser#hzFuncDef}.
+	 * @param ctx the parse tree
+	 */
+	void enterHzFuncDef(@NotNull ExprParser.HzFuncDefContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprParser#hzFuncDef}.
+	 * @param ctx the parse tree
+	 */
+	void exitHzFuncDef(@NotNull ExprParser.HzFuncDefContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link ExprParser#Plus}.

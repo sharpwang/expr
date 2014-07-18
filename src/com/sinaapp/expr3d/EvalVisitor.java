@@ -19,6 +19,8 @@ import com.sinaapp.expr3d.ExprParser.FloatContext;
 import com.sinaapp.expr3d.ExprParser.ForStatContext;
 import com.sinaapp.expr3d.ExprParser.FuncCallContext;
 import com.sinaapp.expr3d.ExprParser.FuncDefContext;
+import com.sinaapp.expr3d.ExprParser.HzFuncCallContext;
+import com.sinaapp.expr3d.ExprParser.HzFuncDefContext;
 import com.sinaapp.expr3d.ExprParser.IdContext;
 import com.sinaapp.expr3d.ExprParser.IfStatContext;
 import com.sinaapp.expr3d.ExprParser.IntContext;
@@ -333,10 +335,31 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 			sym = new VariableSymbol(name);
 			currentScope.define(sym);
 		}
-		NodeValue v = visit(ctx.expr());
-		sym.setValue(v);
-
-		System.out.println(name + "," + v.toString());
+		
+		if(ctx.expr().size() == 1){
+			NodeValue v = visit(ctx.expr(0));
+			sym.setValue(v);		
+			System.out.println(name + "," + v.toString());
+		}
+		else{											//change the list
+			NodeValue v0 = visit(ctx.expr(0));
+			int idx = v0.__integer;
+			if(v0.type == NodeValue.FLOAT){
+				idx = (int)Math.floor((double)v0.__float);				
+			}
+			
+			NodeValue v1 = visit(ctx.expr(1));
+			int value = v1.__integer;
+			if(v1.type == NodeValue.FLOAT){
+				value = (int)Math.floor((double)v1.__float);
+			}
+			
+			NodeValue v = sym.getValue();
+			v.__list.set(idx - 1, value);
+			sym.setValue(v);
+			System.out.println(name + "," + v.toString());
+			
+		}
 		return new NodeValue(); //return void
 	}
 
@@ -480,6 +503,61 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 	public NodeValue visitExprRef(ExprRefContext ctx) {
 		// TODO Auto-generated method stub
 		return visit(ctx.expr());
+	}
+
+
+	@Override
+	public NodeValue visitHzFuncCall(HzFuncCallContext ctx) {
+		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+		String name = ctx.HZID().getSymbol().getText();
+		FunctionSymbol function = (FunctionSymbol)currentScope.resolve(name);
+		int m = function.arguments.size();
+		
+		if(ctx.exprList() != null){
+			int n = ctx.exprList().expr().size();
+			for(int i = 0; i<m && i<n; i++){ //assert m == n, else raise error
+				//VariableSymbol
+				VariableSymbol sym = (VariableSymbol) function.getArgumentAt(i);
+				NodeValue v = visit(ctx.exprList().expr(i));
+				sym.setValue(v);
+			}
+		}
+		currentScope = function;
+		NodeValue v = visit(function.block());
+        visitNextChild = true;
+		currentScope = function.getEnclosingScope();
+		
+		System.out.println(name + "," + v.toString());
+		return v;	
+
+	}
+
+
+	@Override
+	public NodeValue visitHzFuncDef(HzFuncDefContext ctx) {
+		// TODO Auto-generated method stub
+		String name = ctx.HZID().getSymbol().getText();
+			
+	    // push new scope by making new one that points to enclosing scope
+	    FunctionSymbol function = new FunctionSymbol(name, currentScope);
+	    currentScope.define(function); // Define function in current scope
+	    saveScope(ctx, function);      // Push: set function's parent to current
+	    currentScope = function;       // Current scope is now function scope
+	
+	    if(ctx.args() != null){
+		    int n = ctx.args().ID().size();
+		    for(int i=0; i<n; i++){
+		    	String name1 = ctx.args().ID(i).getSymbol().getText();
+		    	VariableSymbol sym = new VariableSymbol(name1);
+		    	function.define(sym);
+		    }
+	    }
+		    
+		function.setBlock(ctx.block());
+		
+		currentScope = currentScope.getEnclosingScope();
+		return new NodeValue(); //return void
 	}
 
 //	
