@@ -28,7 +28,7 @@ public class ExprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements E
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitHzFuncCall(@NotNull ExprParser.HzFuncCallContext ctx) { return visitChildren(ctx); }
+	@Override public T visitExprRef(@NotNull ExprParser.ExprRefContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -36,7 +36,7 @@ public class ExprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements E
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitExprRef(@NotNull ExprParser.ExprRefContext ctx) { return visitChildren(ctx); }
+	@Override public T visitHzFuncCall(@NotNull ExprParser.HzFuncCallContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -85,6 +85,14 @@ public class ExprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements E
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitCompare(@NotNull ExprParser.CompareContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitFunctionCall(@NotNull ExprParser.FunctionCallContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -204,7 +212,7 @@ public class ExprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements E
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFuncCall(@NotNull ExprParser.FuncCallContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFloat(@NotNull ExprParser.FloatContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -212,7 +220,7 @@ public class ExprBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements E
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFloat(@NotNull ExprParser.FloatContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFuncCall(@NotNull ExprParser.FuncCallContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}

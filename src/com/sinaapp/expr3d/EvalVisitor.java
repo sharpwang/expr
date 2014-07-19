@@ -14,6 +14,7 @@ import com.sinaapp.expr3d.ExprParser.BlockContext;
 import com.sinaapp.expr3d.ExprParser.BoolNotContext;
 import com.sinaapp.expr3d.ExprParser.BreakStatContext;
 import com.sinaapp.expr3d.ExprParser.CompareContext;
+import com.sinaapp.expr3d.ExprParser.ExprListContext;
 import com.sinaapp.expr3d.ExprParser.ExprRefContext;
 import com.sinaapp.expr3d.ExprParser.FloatContext;
 import com.sinaapp.expr3d.ExprParser.ForStatContext;
@@ -38,7 +39,9 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
     GlobalScope globals;
     Scope currentScope; // define symbols in this scope
     NodeValue valueReturn = new NodeValue(NodeValue.VOID); //for return in block to function
+    Library library = new Library(this);
     boolean visitNextChild = true;
+    
 
 	@Override
 	public NodeValue visitProg(ProgContext ctx) {
@@ -363,19 +366,35 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		return new NodeValue(); //return void
 	}
 
+	public NodeValue callInnerFunction(String name, ExprListContext ctx) throws NoInnerFunctionException{
+		NodeValue v = library.callInnerFunction(name, ctx);
+		valueReturn = v;
+		visitNextChild = false;
+		return v;
+	}
 
 	@Override
 	public NodeValue visitFuncCall(FuncCallContext ctx) {
 		// TODO Auto-generated method stub
 		String name = ctx.ID().getSymbol().getText();
+		
+		try{
+			NodeValue v = callInnerFunction(name, ctx.exprList());
+			System.out.println(name + "," + v.toString());
+			return v;
+		}
+		catch(NoInnerFunctionException e){
+
+		}
+		
 		FunctionSymbol function = (FunctionSymbol)currentScope.resolve(name);
 		int m = function.arguments.size();
 		int n = ctx.exprList().expr().size();
 		for(int i = 0; i<m && i<n; i++){ //assert m == n, else raise error
 			//VariableSymbol
 			VariableSymbol sym = (VariableSymbol) function.getArgumentAt(i);
-			NodeValue v = visit(ctx.exprList().expr(i));
-			sym.setValue(v);
+			NodeValue v0 = visit(ctx.exprList().expr(i));
+			sym.setValue(v0);
 		}
 		
 		currentScope = function;
