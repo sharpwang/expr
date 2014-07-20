@@ -49,4 +49,18 @@ public class NodeValue {
 		}
 		return sb.toString();		
 	}
+	
+	public int getInteger(){
+		if(type == FLOAT)
+			return (int)Math.floor((double)__float);
+		else
+			return __integer;
+	}
+	
+	public float getFloat(){
+		if(type == INTEGER)
+			return (float)__integer;
+		else
+			return __float;
+	}
 }

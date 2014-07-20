@@ -1,5 +1,6 @@
 package com.sinaapp.expr3d;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,9 @@ import com.sinaapp.expr3d.ExprParser.MultiContext;
 import com.sinaapp.expr3d.ExprParser.PlusContext;
 import com.sinaapp.expr3d.ExprParser.ProgContext;
 import com.sinaapp.expr3d.ExprParser.RelAndContext;
+import com.sinaapp.expr3d.ExprParser.RelOrContext;
 import com.sinaapp.expr3d.ExprParser.ReturnStatContext;
+import com.sinaapp.expr3d.ExprParser.SelectionContext;
 import com.sinaapp.expr3d.ExprParser.UnaryContext;
 
 
@@ -39,13 +42,19 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
     GlobalScope globals;
     Scope currentScope; // define symbols in this scope
     NodeValue valueReturn = new NodeValue(NodeValue.VOID); //for return in block to function
-    Library library = new Library(this);
+    Library3D library = new Library3D(this);
     boolean visitNextChild = true;
     
 
 	@Override
 	public NodeValue visitProg(ProgContext ctx) {
 		// TODO Auto-generated method stub
+		try{
+			library.load3DData();
+		}
+		catch(IOException e){
+			
+		}
         globals = new GlobalScope(null);
         currentScope = globals;
         
@@ -79,12 +88,14 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		List<NodeValue> arrValue = new ArrayList<NodeValue>();
 		Integer count = ctx.getChildCount();
 		NodeValue v = new NodeValue( NodeValue.LIST);
-		for(int i=0; i<ctx.expr().size(); i++){
-			NodeValue v0 = visit(ctx.expr(i));
-			if(v0.type == NodeValue.INTEGER)
-				v.__list.add(v0.__integer);
-			else
-				v.__list.add((int)Math.floor((double)v0.__float));
+		if(ctx.expr() != null){
+			for(int i=0; i<ctx.expr().size(); i++){
+				NodeValue v0 = visit(ctx.expr(i));
+				if(v0.type == NodeValue.INTEGER)
+					v.__list.add(v0.__integer);
+				else
+					v.__list.add((int)Math.floor((double)v0.__float));
+			}
 		}
 		return v;
 	}
@@ -231,10 +242,55 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 			boolean b0 = (v0.__integer == 1);
 			boolean b1 = (v1.__integer == 1);
 			boolean b;
-			if(ctx.op.getText().equals("&&"))
-				b = b0 && b1;
+			b = b0 && b1;
+			if(b == true)
+				v.__integer = 1;
 			else
-				b = b0 || b1;
+				v.__integer = 0;
+		}
+		else{
+			v.type = NodeValue.LIST;
+			List<Integer> arr = new ArrayList<Integer>();
+			for(int i=0; i<v0.__list.size(); i++){
+				int m = v0.__list.get(i);
+				for(int j=0; j<v1.__list.size(); j++){
+					int n = v1.__list.get(j);
+					if(m == n){
+						boolean exists = false;
+						for(int k=0; k<arr.size(); k++ ){
+							int o = arr.get(k);
+							if(m == o){
+								exists = true;
+								break;
+							}
+						}
+						if(!exists) arr.add(m);
+					}
+				}
+			}
+			v.__list = arr;
+		}
+		
+		return v;
+	}
+
+
+	@Override
+	public NodeValue visitRelOr(RelOrContext ctx) {
+		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
+		NodeValue v0 = visit(ctx.expr(0));
+		NodeValue v1 = visit(ctx.expr(1));
+		
+		NodeValue v = new NodeValue();
+		
+		if(v0.type == NodeValue.INTEGER){
+			v.type = NodeValue.INTEGER;
+			
+			boolean b0 = (v0.__integer == 1);
+			boolean b1 = (v1.__integer == 1);
+			boolean b;
+			b = b0 || b1;
 			
 			if(b == true)
 				v.__integer = 1;
@@ -244,49 +300,28 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		else{
 			v.type = NodeValue.LIST;
 			List<Integer> arr = new ArrayList<Integer>();
-			if(ctx.op.getText().equals("&&")){
-				for(int i=0; i<v0.__list.size(); i++){
-					int m = v0.__list.get(i);
-					for(int j=0; j<v1.__list.size(); j++){
-						int n = v1.__list.get(j);
-						if(m == n){
-							boolean exists = false;
-							for(int k=0; k<arr.size(); k++ ){
-								int o = arr.get(k);
-								if(m == o){
-									exists = true;
-									break;
-								}
-							}
-							if(!exists) arr.add(m);
-						}
+			for(int i=0; i<v0.__list.size(); i++){
+				arr.add(v0.__list.get(i));
+			}
+			for(int i=0; i<v1.__list.size(); i++){
+				int m = v1.__list.get(i);
+				boolean exists = false;
+				for(int j=0; j<arr.size(); j++){
+					int n = arr.get(j);
+					if(m == n){ 
+						exists = true;
+						break;
 					}
 				}
-			}
-			else{
-				for(int i=0; i<v0.__list.size(); i++){
-					arr.add(v0.__list.get(i));
-				}
-				for(int i=0; i<v1.__list.size(); i++){
-					int m = v1.__list.get(i);
-					boolean exists = false;
-					for(int j=0; j<arr.size(); j++){
-						int n = arr.get(j);
-						if(m == n){ 
-							exists = true;
-							break;
-						}
-					}
-					if(!exists) arr.add(m);				
-				}				
-			}
+				if(!exists) arr.add(m);				
+			}				
 			v.__list = arr;
 		}
 		
 		return v;
 	}
 
-
+//	
 
 	@Override
 	public NodeValue visitBlock(BlockContext ctx) {
@@ -372,6 +407,13 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		visitNextChild = false;
 		return v;
 	}
+	
+	public NodeValue callInternalSelection(String name, String op, NodeValue value) throws NoInternalSelectionException{
+		NodeValue v = library.callInnerSelection(name, op, value);
+		valueReturn = v;
+		visitNextChild = false;
+		return v;		
+	}
 
 	@Override
 	public NodeValue visitFuncCall(FuncCallContext ctx) {
@@ -380,6 +422,7 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		
 		try{
 			NodeValue v = callInnerFunction(name, ctx.exprList());
+			visitNextChild = true;
 			System.out.println(name + "," + v.toString());
 			return v;
 		}
@@ -530,6 +573,17 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		String name = ctx.HZID().getSymbol().getText();
+		try{
+			NodeValue v = callInnerFunction(name, ctx.exprList());
+			visitNextChild = true;
+			System.out.println(name + "," + v.toString());
+			return v;
+		}
+		catch(NoInnerFunctionException e){
+
+		}
+		
+		
 		FunctionSymbol function = (FunctionSymbol)currentScope.resolve(name);
 		int m = function.arguments.size();
 		
@@ -579,7 +633,26 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		return new NodeValue(); //return void
 	}
 
-//	
+
+	@Override
+	public NodeValue visitSelection(SelectionContext ctx) {
+		// TODO Auto-generated method stub
+		String name = ctx.HZID().getSymbol().getText();
+		NodeValue v = new NodeValue();
+		try{
+			v = callInternalSelection(name, ctx.op.getText(),  visit(ctx.expr()));
+			visitNextChild = true;
+			System.out.println(name + "," + v.toString());
+			return v;
+		}
+		catch(NoInternalSelectionException e){
+
+		}
+		
+		return v;
+	}
+
+
 
 
 }

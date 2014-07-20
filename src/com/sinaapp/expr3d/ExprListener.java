@@ -11,6 +11,17 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface ExprListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link ExprParser#Selection}.
+	 * @param ctx the parse tree
+	 */
+	void enterSelection(@NotNull ExprParser.SelectionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprParser#Selection}.
+	 * @param ctx the parse tree
+	 */
+	void exitSelection(@NotNull ExprParser.SelectionContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link ExprParser#continueStat}.
 	 * @param ctx the parse tree
 	 */
@@ -20,17 +31,6 @@ public interface ExprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitContinueStat(@NotNull ExprParser.ContinueStatContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link ExprParser#ExprRef}.
-	 * @param ctx the parse tree
-	 */
-	void enterExprRef(@NotNull ExprParser.ExprRefContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExprParser#ExprRef}.
-	 * @param ctx the parse tree
-	 */
-	void exitExprRef(@NotNull ExprParser.ExprRefContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link ExprParser#HzFuncCall}.
@@ -44,6 +44,17 @@ public interface ExprListener extends ParseTreeListener {
 	void exitHzFuncCall(@NotNull ExprParser.HzFuncCallContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link ExprParser#ExprRef}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprRef(@NotNull ExprParser.ExprRefContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprParser#ExprRef}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprRef(@NotNull ExprParser.ExprRefContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link ExprParser#Int}.
 	 * @param ctx the parse tree
 	 */
@@ -53,6 +64,17 @@ public interface ExprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInt(@NotNull ExprParser.IntContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ExprParser#RelOr}.
+	 * @param ctx the parse tree
+	 */
+	void enterRelOr(@NotNull ExprParser.RelOrContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprParser#RelOr}.
+	 * @param ctx the parse tree
+	 */
+	void exitRelOr(@NotNull ExprParser.RelOrContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link ExprParser#slist}.
@@ -108,17 +130,6 @@ public interface ExprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCompare(@NotNull ExprParser.CompareContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link ExprParser#FunctionCall}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunctionCall(@NotNull ExprParser.FunctionCallContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExprParser#FunctionCall}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunctionCall(@NotNull ExprParser.FunctionCallContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link ExprParser#hzFuncDef}.
@@ -275,17 +286,6 @@ public interface ExprListener extends ParseTreeListener {
 	void exitRelAnd(@NotNull ExprParser.RelAndContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link ExprParser#Float}.
-	 * @param ctx the parse tree
-	 */
-	void enterFloat(@NotNull ExprParser.FloatContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link ExprParser#Float}.
-	 * @param ctx the parse tree
-	 */
-	void exitFloat(@NotNull ExprParser.FloatContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link ExprParser#FuncCall}.
 	 * @param ctx the parse tree
 	 */
@@ -295,6 +295,17 @@ public interface ExprListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFuncCall(@NotNull ExprParser.FuncCallContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link ExprParser#Float}.
+	 * @param ctx the parse tree
+	 */
+	void enterFloat(@NotNull ExprParser.FloatContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprParser#Float}.
+	 * @param ctx the parse tree
+	 */
+	void exitFloat(@NotNull ExprParser.FloatContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link ExprParser#exprList}.

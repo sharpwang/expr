@@ -14,18 +14,18 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface ExprVisitor<T> extends ParseTreeVisitor<T> {
 	/**
+	 * Visit a parse tree produced by {@link ExprParser#Selection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelection(@NotNull ExprParser.SelectionContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link ExprParser#continueStat}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitContinueStat(@NotNull ExprParser.ContinueStatContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link ExprParser#ExprRef}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitExprRef(@NotNull ExprParser.ExprRefContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link ExprParser#HzFuncCall}.
@@ -35,11 +35,25 @@ public interface ExprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitHzFuncCall(@NotNull ExprParser.HzFuncCallContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link ExprParser#ExprRef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprRef(@NotNull ExprParser.ExprRefContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link ExprParser#Int}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitInt(@NotNull ExprParser.IntContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link ExprParser#RelOr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRelOr(@NotNull ExprParser.RelOrContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link ExprParser#slist}.
@@ -75,13 +89,6 @@ public interface ExprVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCompare(@NotNull ExprParser.CompareContext ctx);
-
-	/**
-	 * Visit a parse tree produced by {@link ExprParser#FunctionCall}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFunctionCall(@NotNull ExprParser.FunctionCallContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link ExprParser#hzFuncDef}.
@@ -182,18 +189,18 @@ public interface ExprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitRelAnd(@NotNull ExprParser.RelAndContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link ExprParser#Float}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFloat(@NotNull ExprParser.FloatContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link ExprParser#FuncCall}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFuncCall(@NotNull ExprParser.FuncCallContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link ExprParser#Float}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFloat(@NotNull ExprParser.FloatContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link ExprParser#exprList}.
