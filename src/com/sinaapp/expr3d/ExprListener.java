@@ -187,6 +187,17 @@ public interface ExprListener extends ParseTreeListener {
 	void exitArrIndex(@NotNull ExprParser.ArrIndexContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link ExprParser#testStat}.
+	 * @param ctx the parse tree
+	 */
+	void enterTestStat(@NotNull ExprParser.TestStatContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprParser#testStat}.
+	 * @param ctx the parse tree
+	 */
+	void exitTestStat(@NotNull ExprParser.TestStatContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link ExprParser#jumpStat}.
 	 * @param ctx the parse tree
 	 */

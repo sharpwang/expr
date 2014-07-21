@@ -126,6 +126,13 @@ public interface ExprVisitor<T> extends ParseTreeVisitor<T> {
 	T visitArrIndex(@NotNull ExprParser.ArrIndexContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link ExprParser#testStat}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTestStat(@NotNull ExprParser.TestStatContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link ExprParser#jumpStat}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

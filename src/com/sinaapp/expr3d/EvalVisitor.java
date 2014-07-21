@@ -15,6 +15,7 @@ import com.sinaapp.expr3d.ExprParser.BlockContext;
 import com.sinaapp.expr3d.ExprParser.BoolNotContext;
 import com.sinaapp.expr3d.ExprParser.BreakStatContext;
 import com.sinaapp.expr3d.ExprParser.CompareContext;
+import com.sinaapp.expr3d.ExprParser.ExprContext;
 import com.sinaapp.expr3d.ExprParser.ExprListContext;
 import com.sinaapp.expr3d.ExprParser.ExprRefContext;
 import com.sinaapp.expr3d.ExprParser.FloatContext;
@@ -34,6 +35,7 @@ import com.sinaapp.expr3d.ExprParser.RelAndContext;
 import com.sinaapp.expr3d.ExprParser.RelOrContext;
 import com.sinaapp.expr3d.ExprParser.ReturnStatContext;
 import com.sinaapp.expr3d.ExprParser.SelectionContext;
+import com.sinaapp.expr3d.ExprParser.TestStatContext;
 import com.sinaapp.expr3d.ExprParser.UnaryContext;
 
 
@@ -42,19 +44,29 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
     GlobalScope globals;
     Scope currentScope; // define symbols in this scope
     NodeValue valueReturn = new NodeValue(NodeValue.VOID); //for return in block to function
-    Library3D library = new Library3D(this);
-    boolean visitNextChild = true;
+    Library3D library;
     
+    public void setLibrary(Library3D library) {
+		this.library = library;
+	}
+
+	boolean visitNextChild = true;
+    int loopCounter = 0;
+
+	public int getLoopCounter() {
+		return loopCounter;
+	}
+
+
+	public void setLoopCounter(int loopCounter) {
+		this.loopCounter = loopCounter;
+	}
+
 
 	@Override
 	public NodeValue visitProg(ProgContext ctx) {
 		// TODO Auto-generated method stub
-		try{
-			library.load3DData();
-		}
-		catch(IOException e){
-			
-		}
+		
         globals = new GlobalScope(null);
         currentScope = globals;
         
@@ -653,6 +665,27 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 	}
 
 
+	@Override
+	public NodeValue visitTestStat(TestStatContext ctx) {
+		// TODO Auto-generated method stub
+		int n = ctx.expr().size();			
+		
+		if(n == 1)
+				return visitTestStat0(ctx.expr(0), null);
+		else
+				return visitTestStat0(ctx.expr(0), ctx.expr(1));
+	}
+
+	
+	public NodeValue visitTestStat0(ExprContext ctx0, ExprContext ctx1){	
+		valueReturn = visit(ctx0);
+		if(ctx1 != null && loopCounter == 0){
+			NodeValue v = visit(ctx1);
+			loopCounter = v.getInteger();
+		}
+		visitNextChild = false;
+		return valueReturn;	
+	}
 
 
 }

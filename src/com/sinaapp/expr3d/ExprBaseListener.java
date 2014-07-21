@@ -227,6 +227,19 @@ public class ExprBaseListener implements ExprListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterTestStat(@NotNull ExprParser.TestStatContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTestStat(@NotNull ExprParser.TestStatContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterJumpStat(@NotNull ExprParser.JumpStatContext ctx) { }
 	/**
 	 * {@inheritDoc}

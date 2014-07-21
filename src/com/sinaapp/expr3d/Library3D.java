@@ -13,7 +13,7 @@ import com.sinaapp.expr3d.ExprParser.ExprListContext;
 public class Library3D {
 	private static Map<String, Parsable> functions= new HashMap<String, Parsable>();
 	private static Map<String, Selectable> selections = new HashMap<String, Selectable>();
-	private final EvalVisitor visitor;
+	private EvalVisitor visitor;
 	private List<List<Integer>> data = new ArrayList<List<Integer>>();
 	private ExprListContext ctx;
 	private int currentIndex;
@@ -24,6 +24,10 @@ public class Library3D {
 		InitInternalSelections();
 	}
 	
+	public void setVisitor(EvalVisitor visitor) {
+		this.visitor = visitor;
+	}
+	
 	public void InitInnerFunctions(){
 		functions.put("float", new InnerFloat(this));		
 		functions.put("size", new InnerSize(this));
@@ -31,8 +35,11 @@ public class Library3D {
 		functions.put("调入3d", new InnerLoad3D(this));
 		functions.put("getdata", new InnerGetData(this));
 		functions.put("ref", new InnerRef(this));
+		functions.put("测试", new InnerTest(this));
 		functions.put("跨度", new InnerKuaDu(this));
 		functions.put("百位", new InnerBaiWei(this));
+		functions.put("十位", new InnerShiWei(this));
+		functions.put("个位", new InnerGeWei(this));
 	}
 	
 	public void InitInternalSelections(){
