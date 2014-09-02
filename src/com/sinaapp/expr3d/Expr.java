@@ -29,9 +29,7 @@ public class Expr {
 	        EvalVisitor eval = new EvalVisitor();
 	        Library3D library = new Library3D(eval);
 	        eval.setLibrary(library);
-	        List<List<Integer>> arr = DBHelper2.Load3DData();
-	        library.attach3DData(arr);
-	        //library.load3DData();
+	        library.load3DData();
 	        NodeValue v = null;
 	        try{
 	        	v = eval.visit(tree);
