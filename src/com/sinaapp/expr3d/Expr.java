@@ -55,7 +55,7 @@ public class Expr {
 	        }   
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			e.printStackTrace(); //--
 		}
 		logger.trace("programm ends");
 	}
