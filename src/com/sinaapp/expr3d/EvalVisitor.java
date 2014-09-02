@@ -70,6 +70,7 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
         globals = new GlobalScope(null);
         currentScope = globals;
         
+        
 		return super.visitProg(ctx);
 	}
 
@@ -346,6 +347,7 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
     	v = visitChildren(ctx);
 
         currentScope = currentScope.getEnclosingScope();
+        
         return v;
 	}
 
@@ -388,11 +390,13 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		
 		if(ctx.expr().size() == 1){
 			NodeValue v = visit(ctx.expr(0));
-			sym.setValue(v);		
+			valueReturn = v;
+			sym.setValue(v);	
 			System.out.println(name + "," + v.toString());
 		}
 		else{											//change the list
 			NodeValue v0 = visit(ctx.expr(0));
+			valueReturn = v0;
 			int idx = v0.__integer;
 			if(v0.type == NodeValue.FLOAT){
 				idx = (int)Math.floor((double)v0.__float);				
@@ -410,19 +414,17 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 			System.out.println(name + "," + v.toString());
 			
 		}
-		return new NodeValue(); //return void
+		return valueReturn;
 	}
 
 	public NodeValue callInnerFunction(String name, ExprListContext ctx) throws NoInnerFunctionException{
 		NodeValue v = library.callInnerFunction(name, ctx);
-		valueReturn = v;
 		visitNextChild = false;
 		return v;
 	}
 	
 	public NodeValue callInternalSelection(String name, String op, NodeValue value) throws NoInternalSelectionException{
 		NodeValue v = library.callInnerSelection(name, op, value);
-		valueReturn = v;
 		visitNextChild = false;
 		return v;		
 	}
@@ -434,6 +436,7 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		
 		try{
 			NodeValue v = callInnerFunction(name, ctx.exprList());
+			valueReturn = v;
 			visitNextChild = true;
 			System.out.println(name + "," + v.toString());
 			return v;
@@ -454,6 +457,7 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		
 		currentScope = function;
 		NodeValue v = visit(function.block());
+		valueReturn = v;		
         visitNextChild = true;
 		currentScope = function.getEnclosingScope();
 		
@@ -504,11 +508,13 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		int n = ctx.slist().size();
 		if(v0.__integer == 1){
 			NodeValue v1 = visit(ctx.slist(0));
+			valueReturn = v1;
 		}
 		else if(n == 2){
 			NodeValue v2 = visit(ctx.slist(1));
+			valueReturn = v2;			
 		}
-		return new NodeValue();
+		return valueReturn;
 	}
 
 
@@ -533,7 +539,9 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
         }
         visitNextChild = true;
         currentScope = currentScope.getEnclosingScope();
-        return new NodeValue();	
+        NodeValue v = new NodeValue();
+        valueReturn = v;
+        return v;	
 	}
 
 
@@ -542,13 +550,6 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		// TODO Auto-generated method stub
 		visitNextChild = false;
 		return new NodeValue();
-	}
-
-
-	@Override
-	public NodeValue visitJumpStat(JumpStatContext ctx) {
-		// TODO Auto-generated method stub
-		return super.visitJumpStat(ctx);
 	}
 
 
@@ -569,6 +570,7 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		else if(op.equals("<")) ret = f0 < f1;
 		NodeValue v = new NodeValue(NodeValue.INTEGER);
 		if(ret == true) v.__integer = 1; else v.__integer = 0;
+		valueReturn = v;
 		return v;
 	}
 
@@ -587,6 +589,7 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		String name = ctx.HZID().getSymbol().getText();
 		try{
 			NodeValue v = callInnerFunction(name, ctx.exprList());
+			valueReturn = v;
 			visitNextChild = true;
 			System.out.println(name + "," + v.toString());
 			return v;
@@ -610,6 +613,7 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		}
 		currentScope = function;
 		NodeValue v = visit(function.block());
+		valueReturn = v;		
         visitNextChild = true;
 		currentScope = function.getEnclosingScope();
 		
@@ -653,6 +657,7 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		NodeValue v = new NodeValue();
 		try{
 			v = callInternalSelection(name, ctx.op.getText(),  visit(ctx.expr()));
+			valueReturn = v;
 			visitNextChild = true;
 			System.out.println(name + "," + v.toString());
 			return v;
@@ -660,7 +665,6 @@ public class EvalVisitor extends ExprBaseVisitor<NodeValue> {
 		catch(NoInternalSelectionException e){
 
 		}
-		
 		return v;
 	}
 

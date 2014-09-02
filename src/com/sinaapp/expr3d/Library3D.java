@@ -50,14 +50,13 @@ public class Library3D {
 		
 	}
 	
-	public void load3DData() throws IOException{
-		BufferedReader in;
-		try{
-			in = new BufferedReader( new FileReader("./3d.txt"));
-		}
-		catch(IOException e){
-			in = new BufferedReader( new FileReader("./bin/com/sinaapp/expr3d/3d.txt"));		
-		}
+	public void attach3DData(List<List<Integer>> arr){
+		data = arr;
+		currentIndex = data.size();
+	}
+	
+	public void load3DData(BufferedReader in) throws IOException
+	{
 		
 		data.clear();
 		String s;
@@ -94,6 +93,18 @@ public class Library3D {
 		}
 		in.close();
 		currentIndex = data.size();
+		
+	}
+	
+	public void load3DData() throws IOException{
+		BufferedReader in;
+		try{
+			in = new BufferedReader( new FileReader("./3d.txt"));
+		}
+		catch(IOException e){
+			in = new BufferedReader( new FileReader("./bin/com/sinaapp/expr3d/3d.txt"));		
+		}
+		load3DData(in);
 	}
 	
 	public ExprListContext getCtx() {
@@ -107,14 +118,14 @@ public class Library3D {
 	public NodeValue callInnerFunction(String name, ExprListContext ctx) throws NoInnerFunctionException{
 		this.ctx = ctx;
 		Parsable parser = (Parsable) functions.get(name);
-		if(parser == null) throw new NoInnerFunctionException();
+		if(parser == null) throw new AppException("函数'" + name + "'未定义");
 		NodeValue v = parser.parse();
 		return v;
 	}
 	
 	public NodeValue callInnerSelection(String name, String op, NodeValue value) throws NoInternalSelectionException{
 		Selectable selector = (Selectable) selections.get(name);
-		if(selector == null) throw new NoInternalSelectionException();
+		if(selector == null) throw new AppException("函数'" + name + "'未定义");
 		NodeValue v = selector.select(op, value);
 		return v;
 	}
